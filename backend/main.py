@@ -152,9 +152,9 @@ async def lifespan(app: FastAPI):
 app = FastAPI(title="School Assessment & Result Portal API", lifespan=lifespan)
 
 raw_origins = os.getenv(
-    "ALLOWED_ORIGINS",
-    "http://127.0.0.1:5500,http://localhost:5500",
-)
+        "ALLOWED_ORIGINS",
+        "https://school-assessment-result-portal-1.onrender.com,http://127.0.0.1:5500,http://localhost:5500",
+    )
 allowed_origins = [o.strip() for o in raw_origins.split(",") if o.strip()]
 
 app.add_middleware(

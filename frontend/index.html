@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>School Assessment & Result Portal</title>
+  <link rel="stylesheet" href="./css/styles.css" />
+</head>
+<body>
+  <header class="topbar no-print">
+    <div>
+      <h1>School Assessment &amp; Result Portal</h1>
+      <p class="subtitle">Admin Configuration &bull; Staff Score Entry &bull; Student Report Sheets</p>
+    </div>
+    <div class="topbar-actions">
+      <span id="apiBadge" class="badge">Checking API...</span>
+      <span id="userBadge" class="badge hidden"></span>
+      <button id="logoutBtn" class="btn btn-secondary hidden" type="button">Logout</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <div id="banner" class="banner hidden no-print"></div>
+
+    <!-- LOGIN PORTAL -->
+    <section id="loginView" class="card login-card">
+      <h2>Portal Sign In</h2>
+      <p class="muted">Sign in with your Admin ID, Staff ID, or Student Admission Number.</p>
+      <form id="loginForm" class="stack">
+        <label>
+          Username / Staff ID / Admission No.
+          <input type="text" id="loginUsername" placeholder="e.g. admin" required />
+        </label>
+        <label>
+          Password
+          <input type="password" id="loginPassword" placeholder="Enter password" required />
+        </label>
+        <button class="btn btn-primary" type="submit">Sign In</button>
+      </form>
+      <div class="hint-box">
+        <strong>Default Admin Demo Login:</strong> Username <code>admin</code> &bull; Password <code>admin123</code>
+      </div>
+    </section>
+
+    <!-- ADMIN PORTAL -->
+    <section id="adminView" class="hidden">
+      <div class="tabs no-print">
+        <button class="tab active" data-tab="tabTemplate">1. Report Sheet Template</button>
+        <button class="tab" data-tab="tabAcademics">2. Classes &amp; Subjects</button>
+        <button class="tab" data-tab="tabAccounts">3. Staff &amp; Student Accounts</button>
+        <button class="tab" data-tab="tabPreview">4. Preview Student Report</button>
+      </div>
+
+      <!-- TAB 1: REPORT SHEET TEMPLATE -->
+      <div id="tabTemplate" class="tab-panel card">
+        <h2>Assessment &amp; Report Sheet Template Configuration</h2>
+        <p class="muted">Configure school details, active term/session, and assessment weightings (must total 100).</p>
+        <form id="templateForm" class="grid-2">
+          <label>School Name <input type="text" id="tplSchoolName" required /></label>
+          <label>School Motto <input type="text" id="tplSchoolMotto" required /></label>
+          <label>School Address <input type="text" id="tplSchoolAddress" required /></label>
+          <label>Principal Name <input type="text" id="tplPrincipalName" required /></label>
+          <label>Academic Session <input type="text" id="tplSession" required /></label>
+          <label>Current Term <input type="text" id="tplTerm" required /></label>
+          <label>1st Assessment Label <input type="text" id="tplCa1Label" required /></label>
+          <label>1st Assessment Max Score <input type="number" step="0.5" id="tplCa1Max" required /></label>
+          <label>2nd Assessment Label <input type="text" id="tplCa2Label" required /></label>
+          <label>2nd Assessment Max Score <input type="number" step="0.5" id="tplCa2Max" required /></label>
+          <label>Exam Label <input type="text" id="tplExamLabel" required /></label>
+          <label>Exam Max Score <input type="number" step="0.5" id="tplExamMax" required /></label>
+          <label>Next Term Begins <input type="text" id="tplNextTerm" required /></label>
+          <div class="align-end">
+            <button class="btn btn-primary" type="submit">Save Report Template</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- TAB 2: CLASSES, SUBJECTS & ASSIGNMENTS -->
+      <div id="tabAcademics" class="tab-panel hidden grid-3">
+        <div class="card">
+          <h3>Create Class</h3>
+          <form id="classForm" class="stack">
+            <label>Class Name <input type="text" id="className" placeholder="e.g. JSS 1A" required /></label>
+            <label>Section / Level <input type="text" id="classLevel" placeholder="e.g. Junior Secondary" /></label>
+            <button class="btn btn-primary" type="submit">Add Class</button>
+          </form>
+          <ul id="classList" class="clean-list"></ul>
+        </div>
+
+        <div class="card">
+          <h3>Create Subject</h3>
+          <form id="subjectForm" class="stack">
+            <label>Subject Name <input type="text" id="subjectName" placeholder="e.g. Arabic Language" required /></label>
+            <label>Subject Code <input type="text" id="subjectCode" placeholder="e.g. ARB101" /></label>
+            <button class="btn btn-primary" type="submit">Add Subject</button>
+          </form>
+          <ul id="subjectList" class="clean-list"></ul>
+        </div>
+
+        <div class="card">
+          <h3>Assign Subject to Staff</h3>
+          <form id="assignForm" class="stack">
+            <label>Staff Member <select id="assignStaffId" required></select></label>
+            <label>Class <select id="assignClassId" required></select></label>
+            <label>Subject <select id="assignSubjectId" required></select></label>
+            <button class="btn btn-primary" type="submit">Assign Teacher</button>
+          </form>
+          <ul id="assignmentList" class="clean-list"></ul>
+        </div>
+      </div>
+
+      <!-- TAB 3: CREATE STAFF & STUDENT ACCOUNTS -->
+      <div id="tabAccounts" class="tab-panel hidden grid-2">
+        <div class="card">
+          <h3>Create Staff or Student Account</h3>
+          <form id="userForm" class="stack">
+            <label>
+              Account Role
+              <select id="userRole" required>
+                <option value="staff">Staff (Teacher)</option>
+                <option value="student">Student</option>
+                <option value="admin">Admin</option>
+              </select>
+            </label>
+            <label>
+              Staff ID / Admission Number (Login Username)
+              <input type="text" id="userUsername" placeholder="e.g. STF/001 or ADM/2026/014" required />
+            </label>
+            <label>Full Name <input type="text" id="userFullName" placeholder="e.g. Aisha Suleiman" required /></label>
+            <label>Gender
+              <select id="userGender">
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+              </select>
+            </label>
+            <label id="studentClassWrap" class="hidden">
+              Student Class
+              <select id="userClassId"></select>
+            </label>
+            <label>Initial Password <input type="text" id="userPassword" value="123456" required /></label>
+            <button class="btn btn-primary" type="submit">Create Account</button>
+          </form>
+        </div>
+
+        <div class="card">
+          <h3>Registered Portal Accounts</h3>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>ID / Adm No.</th>
+                  <th>Full Name</th>
+                  <th>Role</th>
+                  <th>Class</th>
+                </tr>
+              </thead>
+              <tbody id="usersTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 4: PREVIEW ANY STUDENT REPORT -->
+      <div id="tabPreview" class="tab-panel hidden card">
+        <h3>Inspect &amp; Print Student Report Sheet</h3>
+        <div class="row">
+          <select id="adminPreviewStudentSelect"></select>
+          <button id="adminLoadReportBtn" class="btn btn-primary" type="button">Load Report Sheet</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- STAFF PORTAL -->
+    <section id="staffView" class="hidden">
+      <div class="card">
+        <h2>Staff Assessment &amp; Score Entry Portal</h2>
+        <p class="muted">Select one of your assigned classes and subjects to record CA and Exam scores.</p>
+        <div class="row">
+          <label class="grow">
+            Assigned Class &amp; Subject
+            <select id="staffAssignmentSelect"></select>
+          </label>
+          <button id="loadSheetBtn" class="btn btn-primary" type="button">Load Score Sheet</button>
+        </div>
+
+        <div id="scoreSheetContainer" class="hidden">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Admission No.</th>
+                  <th>Student Name</th>
+                  <th id="thCa1">1st CA (20)</th>
+                  <th id="thCa2">2nd CA (20)</th>
+                  <th id="thExam">Exam (60)</th>
+                  <th>Total</th>
+                  <th>Grade</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="scoreEntryBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Attendance, Affective Ratings &amp; Form Teacher Remarks</h3>
+        <form id="summaryForm" class="grid-2">
+          <label>Select Student <select id="summaryStudentId" required></select></label>
+          <label>Days School Opened <input type="number" id="sumDaysOpened" value="65" required /></label>
+          <label>Days Present <input type="number" id="sumDaysPresent" value="62" required /></label>
+          <label>Punctuality
+            <select id="sumPunctuality">
+              <option>Excellent</option>
+              <option selected>Very Good</option>
+              <option>Good</option>
+              <option>Fair</option>
+            </select>
+          </label>
+          <label>Neatness
+            <select id="sumNeatness">
+              <option selected>Excellent</option>
+              <option>Very Good</option>
+              <option>Good</option>
+              <option>Fair</option>
+            </select>
+          </label>
+          <label>Conduct
+            <select id="sumConduct">
+              <option>Excellent</option>
+              <option selected>Very Good</option>
+              <option>Good</option>
+              <option>Fair</option>
+            </select>
+          </label>
+          <label>Form Teacher Remark
+            <input type="text" id="sumTeacherRemark" value="A diligent and well-behaved student." />
+          </label>
+          <label>Principal Remark
+            <input type="text" id="sumPrincipalRemark" value="Good result. Keep working hard." />
+          </label>
+          <div>
+            <button class="btn btn-primary" type="submit">Save Termly Remarks</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- REPORT SHEET RENDERER (VISIBLE TO STUDENTS & ADMIN PREVIEW) -->
+    <section id="reportSheetSection" class="hidden">
+      <div class="report-toolbar no-print">
+        <h2>Student Termly Report Sheet</h2>
+        <button id="printReportBtn" class="btn btn-primary" type="button">Print / Save as PDF</button>
+      </div>
+
+      <div id="reportPaper" class="report-paper">
+        <div class="report-header">
+          <h2 id="repSchoolName">SCHOOL NAME</h2>
+          <p id="repSchoolMotto" class="motto">Motto</p>
+          <p id="repSchoolAddress">Address</p>
+          <div class="report-title-bar">TERMLY CONTINUOUS ASSESSMENT &amp; EXAMINATION REPORT SHEET</div>
+        </div>
+
+        <div class="student-meta-grid">
+          <div><strong>Student Name:</strong> <span id="repStudentName"></span></div>
+          <div><strong>Admission No.:</strong> <span id="repAdmissionNo"></span></div>
+          <div><strong>Class:</strong> <span id="repClassName"></span></div>
+          <div><strong>Gender:</strong> <span id="repGender"></span></div>
+          <div><strong>Academic Session:</strong> <span id="repSession"></span></div>
+          <div><strong>Term:</strong> <span id="repTerm"></span></div>
+          <div><strong>Class Position:</strong> <span id="repPosition"></span></div>
+          <div><strong>Next Term Begins:</strong> <span id="repNextTerm"></span></div>
+        </div>
+
+        <table class="report-table">
+          <thead>
+            <tr>
+              <th>Subject</th>
+              <th id="repThCa1">1st CA</th>
+              <th id="repThCa2">2nd CA</th>
+              <th id="repThExam">Exam</th>
+              <th>Total (100)</th>
+              <th>Grade</th>
+              <th>Remark</th>
+            </tr>
+          </thead>
+          <tbody id="repScoresBody"></tbody>
+        </table>
+
+        <div class="report-summary-box">
+          <div><strong>Marks Obtainable:</strong> <span id="repMaxObtainable"></span></div>
+          <div><strong>Total Marks Obtained:</strong> <span id="repGrandTotal"></span></div>
+          <div><strong>Term Average:</strong> <span id="repAverage"></span>%</div>
+          <div><strong>Overall Grade:</strong> <span id="repOverallGrade"></span></div>
+        </div>
+
+        <div class="report-footer-grid">
+          <div class="box">
+            <h4>Attendance &amp; Behavioral Assessment</h4>
+            <p><strong>Attendance:</strong> <span id="repAttendance"></span></p>
+            <p><strong>Punctuality:</strong> <span id="repPunctuality"></span></p>
+            <p><strong>Neatness:</strong> <span id="repNeatness"></span></p>
+            <p><strong>Conduct:</strong> <span id="repConduct"></span></p>
+          </div>
+          <div class="box">
+            <h4>Remarks &amp; Authorization</h4>
+            <p><strong>Form Teacher's Remark:</strong> <span id="repTeacherRemark"></span></p>
+            <p><strong>Principal's Remark:</strong> <span id="repPrincipalRemark"></span></p>
+            <p class="signature-line"><strong>Principal:</strong> <span id="repPrincipalName"></span></p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="./js/api.js"></script>
+  <script src="./js/auth.js"></script>
+  <script src="./js/app.js"></script>
+</body>
+</html>
